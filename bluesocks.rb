@@ -9,12 +9,12 @@ rules = {
 	othermode: [
 		Rule.new(:comma2, /\,\s*/, :otherothermode),
 		Rule.new(:period2, /\.\s*/, :<),
-		Rule.new(:word2, /.+/)
+		Rule.new(:word2, /[^\,]+/)
 	],
 	otherothermode: [
 		Rule.new(:comma3, /\,\s*/),
 		Rule.new(:period3, /\.\s*/, :<),
-		Rule.new(:word3, /.+/)
+		Rule.new(:word3, /[^\,\.]+/)
 	]
 }
 
@@ -39,11 +39,11 @@ def tokenize s, src, rules=nil
 		if rule.scope == :< then scope.pop
 		else scope.push rule.scope unless rule.scope.nil? end
 		
-		next_token = Token.new(rule.name, s[0..i].match(rule.regex).to_s, src, row, col, scope.join('.'));
+		next_token = Token.new(rule.name, s[i..s.length].match(rule.regex).to_s, src, row, col, scope.join('.'));
 		i += next_token.data.length
 		out.push next_token
 	end
 	return out, true
 end
 
-puts(tokenize("ab.cde,f", "source", rules))
+puts(tokenize("ab.cde,f..LOLOLOLOL", "source", rules))
